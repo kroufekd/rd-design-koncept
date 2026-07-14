@@ -80,6 +80,54 @@ section.block{padding:9vh 4vw}
 .block-head .sub{font-size:14.5px;color:#6E675A;max-width:420px;line-height:1.65}
 .note{font-size:12px;color:#8A8171;margin-top:18px;letter-spacing:.04em}
 
+/* ===== komponenta: hero landing page ===== */
+.lhero{position:relative;border-radius:22px;overflow:hidden;min-height:min(88vh,860px);display:flex;flex-direction:column;box-shadow:0 40px 90px -45px rgba(40,34,20,.55);isolation:isolate}
+.lhero-bg{position:absolute;inset:0;z-index:0}
+.lhero-bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.07);will-change:transform;transition:transform .2s ease-out}
+.lhero-bg::after{content:'';position:absolute;inset:0;background:
+  linear-gradient(88deg, rgba(246,241,232,.97) 0%, rgba(246,241,232,.93) 34%, rgba(246,241,232,.55) 52%, rgba(246,241,232,0) 72%),
+  linear-gradient(0deg, rgba(44,40,34,.28) 0%, rgba(44,40,34,0) 30%)}
+.lhero-nav{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 3.2vw}
+.lhero-nav .lg{font-family:Fraunces,serif;font-size:21px;font-weight:600;color:var(--forest);letter-spacing:.01em}
+.lhero-nav .lg span{color:var(--terra)}
+.lhero-nav .links{display:flex;gap:30px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#57503F}
+.lhero-nav .links span{position:relative;cursor:pointer;padding-bottom:3px}
+.lhero-nav .links span::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--terra);transition:width .25s}
+.lhero-nav .links span:hover::after{width:100%}
+.lhero-nav .tel{font-size:13px;font-weight:700;color:var(--forest);white-space:nowrap;background:rgba(246,241,232,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:9px 16px;border-radius:100px;border:1px solid rgba(255,255,255,.6)}
+@media(max-width:1100px){.lhero-nav .links{display:none}}
+.lhero-body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 3.2vw 40px;max-width:820px}
+.lhero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px}
+.lhero-eyebrow .dotp{width:9px;height:9px;border-radius:50%;background:var(--st-free);box-shadow:0 0 0 0 rgba(78,139,95,.5);animation:pulse 2.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(78,139,95,.45)}70%{box-shadow:0 0 0 11px rgba(78,139,95,0)}100%{box-shadow:0 0 0 0 rgba(78,139,95,0)}}
+.lhero-eyebrow b{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:var(--forest)}
+.lhero-body h1{font-family:Fraunces,serif;font-weight:410;font-size:clamp(44px,4.6vw,78px);line-height:1.04;letter-spacing:-.015em;color:var(--ink)}
+.lhero-body h1 em{font-style:italic;color:var(--forest)}
+.lhero-body .sub{font-size:17px;line-height:1.7;color:#57503F;max-width:480px;margin:24px 0 34px}
+.lhero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.lhero-stats{position:relative;z-index:2;display:flex;border-top:1px solid rgba(44,40,34,.14);background:rgba(246,241,232,.6);backdrop-filter:blur(10px)}
+.lhero-stats > div{flex:1;padding:20px 3.2vw 22px;border-right:1px solid rgba(44,40,34,.12);font-size:11px;letter-spacing:.08em;color:#6E675A;text-transform:uppercase;font-weight:700}
+.lhero-stats > div:last-child{border-right:0}
+.lhero-stats b{display:block;font-family:Fraunces,serif;font-size:26px;font-weight:500;color:var(--forest);margin-bottom:3px;letter-spacing:0;text-transform:none}
+@media(max-width:800px){.lhero-stats{flex-wrap:wrap}.lhero-stats > div{flex:1 1 40%}}
+/* plovoucí karta dostupnosti */
+.avail{position:absolute;z-index:3;right:3vw;bottom:120px;width:300px;background:rgba(255,253,248,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.65);border-radius:16px;padding:20px 22px;box-shadow:0 26px 60px -22px rgba(40,34,20,.45)}
+@media(max-width:1200px){.avail{display:none}}
+.avail .cap{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:#8A8171;margin-bottom:13px}
+.avail .abar{display:flex;height:9px;border-radius:100px;overflow:hidden;margin-bottom:14px}
+.avail .abar i{display:block;height:100%}
+.avail ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:#57503F}
+.avail li{display:flex;align-items:center;gap:9px}
+.avail li i{width:9px;height:9px;border-radius:3px;flex:none}
+.avail li b{margin-left:auto;font-weight:800;color:var(--ink)}
+.avail .alink{display:inline-block;margin-top:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--terra);cursor:pointer}
+/* scroll hint */
+.lhero-scroll{position:absolute;z-index:3;left:50%;bottom:96px;transform:translateX(-50%);width:24px;height:38px;border:2px solid rgba(44,40,34,.35);border-radius:14px;display:flex;justify-content:center;padding-top:7px}
+.lhero-scroll i{width:3.5px;height:8px;border-radius:3px;background:var(--terra);animation:wheel 1.8s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}60%{transform:translateY(11px);opacity:0}61%{transform:translateY(0);opacity:0}100%{opacity:1}}
+@media(max-width:800px){.lhero-scroll{display:none}}
+@media (prefers-reduced-motion:reduce){.lhero-scroll i,.lhero-eyebrow .dotp{animation:none}.lhero-bg img{transform:none !important}}
+
 /* ===== komponenta: nabídka domů ===== */
 .offers{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
@@ -272,6 +320,66 @@ section.block{padding:9vh 4vw}
     </div>
   </div>
 </div>
+
+<!-- ============ KOMPONENTA: hero landing page ============ -->
+<section class="block">
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenta · hero landing page</div>
+    </div>
+    <p class="sub">Úvodní obrazovka webu: velká vizualizace, hlavní sdělení, dvě akce
+    a živá karta dostupnosti napojená na administraci. Fotografie jemně reaguje na pohyb myši.</p>
+  </div>
+
+  <div class="lhero" id="lhero">
+    <div class="lhero-bg">
+      <img id="lhero-img" src="https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1920" alt="Vizualizace projektu">
+    </div>
+
+    <nav class="lhero-nav">
+      <span class="lg">Váš<span>·</span>projekt</span>
+      <span class="links">
+        <span>O projektu</span><span>Domy</span><span>Lokalita</span><span>Ceník</span><span>Galerie</span><span>Kontakt</span>
+      </span>
+      <span class="tel">+420 606 774 064</span>
+    </nav>
+
+    <div class="lhero-body">
+      <span class="lhero-eyebrow"><span class="dotp"></span><b>II. etapa v prodeji · 9 domů volných</b></span>
+      <h1>Nové rodinné domy <em>se zahradou</em> kousek od města</h1>
+      <p class="sub">28 nízkoenergetických domů 4+kk a 5+kk s tepelným čerpadlem,
+      podlahovým vytápěním a parkováním u domu. Dokončení jaro 2027.</p>
+      <div class="lhero-ctas">
+        <button class="ubtn primary" type="button">Prohlédnout nabídku domů <span class="arr">→</span></button>
+        <button class="ubtn outline" type="button">Domluvit prohlídku</button>
+      </div>
+    </div>
+
+    <aside class="avail">
+      <div class="cap">Aktuální dostupnost</div>
+      <div class="abar">
+        <i style="width:32%;background:var(--st-free)"></i>
+        <i style="width:21%;background:var(--st-res)"></i>
+        <i style="width:47%;background:var(--st-sold);opacity:.75"></i>
+      </div>
+      <ul>
+        <li><i style="background:var(--st-free)"></i>Volné domy<b>9</b></li>
+        <li><i style="background:var(--st-res)"></i>Rezervované<b>6</b></li>
+        <li><i style="background:var(--st-sold);opacity:.75"></i>Prodané<b>13</b></li>
+      </ul>
+      <span class="alink">Zobrazit ceník →</span>
+    </aside>
+
+    <span class="lhero-scroll" aria-hidden="true"><i></i></span>
+
+    <div class="lhero-stats">
+      <div><b>28</b>domů v projektu</div>
+      <div><b>4+kk · 5+kk</b>dispozice</div>
+      <div><b>od 8,9 mil. Kč</b>vč. DPH a pozemku</div>
+      <div><b>jaro 2027</b>dokončení I. etapy</div>
+    </div>
+  </div>
+</section>
 
 <!-- ============ KOMPONENTA: nabídka domů ============ -->
 <section class="block offers">
@@ -636,7 +744,7 @@ section.block{padding:9vh 4vw}
     ring.style.transform = 'translate(' + (rx - ring.offsetWidth/2) + 'px,' + (ry - ring.offsetHeight/2) + 'px)';
     requestAnimationFrame(loop);
   })();
-  var HOV = 'a, .card, .chip, .ubtn, .tbtn, .lot, .go';
+  var HOV = 'a, .card, .chip, .ubtn, .tbtn, .lot, .go, .lhero-nav .links span, .alink';
   document.addEventListener('mouseover', function(e){
     if (e.target.closest(HOV)) ring.classList.add('hov');
   });
@@ -667,10 +775,36 @@ section.block{padding:9vh 4vw}
   });
 })();
 
+/* ===== hero parallax ===== */
+(function(){
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var hero = document.getElementById('lhero');
+  var img = document.getElementById('lhero-img');
+  if (!hero || !img) return;
+  var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+  function loop(){
+    cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
+    img.style.transform = 'scale(1.07) translate(' + cx + 'px,' + cy + 'px)';
+    if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) raf = requestAnimationFrame(loop);
+    else raf = null;
+  }
+  hero.addEventListener('mousemove', function(e){
+    var r = hero.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width - 0.5) * -16;
+    ty = ((e.clientY - r.top) / r.height - 0.5) * -10;
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+  hero.addEventListener('mouseleave', function(){
+    tx = 0; ty = 0;
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+})();
+
 /* ===== scroll reveal ===== */
 (function(){
   if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  var SEL = ['.hero-side > *', '.spec > *', '.palette .sw', '.block-head', '.filters', '.card',
+  var SEL = ['.hero-side > *', '.spec > *', '.palette .sw', '.block-head', '.lhero', '.filters', '.card',
              '.cta-row', '.plan-wrap', '.note', '.panel', '.t-row', '.btn-cell'];
   var els = document.querySelectorAll(SEL.join(','));
   els.forEach(function(el, i){ el.classList.add('rv'); el.dataset.rv = i; });
