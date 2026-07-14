@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moodboard · Přírodní moderna · Web developerského projektu RD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F1E8; --bg2:#EFE7D8; --ink:#2C2822; --forest:#3D5A40; --forest-2:#57795B;
+  --terra:#C06B45; --sand:#D9C9AC; --line:#DDD2BE; --paper:#FFFDF8;
+  --st-free:#4E8B5F; --st-res:#D2953B; --st-sold:#A85241; --st-prep:#5F7E9E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",sans-serif;-webkit-font-smoothing:antialiased}
+/* jemné papírové zrno přes celou stránku */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.028;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* decentní tečkování v rozích */
+.corner-dots{position:absolute;pointer-events:none;z-index:0;width:380px;height:320px;
+  background-image:radial-gradient(var(--forest) 1.3px, transparent 1.3px);
+  background-size:24px 24px;opacity:.13;
+  -webkit-mask-image:radial-gradient(ellipse at var(--mx,100%) var(--my,0%), #000 0%, transparent 72%);
+  mask-image:radial-gradient(ellipse at var(--mx,100%) var(--my,0%), #000 0%, transparent 72%)}
+.label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;color:#8A8171}
+
+/* ===== custom cursor ===== */
+@media (hover:hover) and (pointer:fine){
+  body.cur-on, body.cur-on *{cursor:none}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;will-change:transform}
+  .cursor-dot{width:7px;height:7px;background:var(--terra);transform:translate(-50%,-50%)}
+  .cursor-ring{width:36px;height:36px;border:1.5px solid var(--forest);opacity:.55;transform:translate(-50%,-50%);transition:width .25s ease,height .25s ease,opacity .25s ease,border-color .25s ease,background .25s ease}
+  .cursor-ring.hov{width:56px;height:56px;opacity:.9;border-color:var(--terra);background:rgba(192,107,69,.08)}
+  .cursor-ring.down{width:26px;height:26px;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .cursor-dot,.cursor-ring{display:none}
+  body.cur-on, body.cur-on *{cursor:auto}
+}
+
+/* ===== hero ===== */
+.hero{min-height:100vh;display:grid;grid-template-columns:minmax(380px,32vw) 1fr}
+@media(max-width:960px){.hero{grid-template-columns:1fr;min-height:0}}
+.hero-side{background:var(--forest);color:#F2EDE2;padding:6vh 3vw;display:flex;flex-direction:column;gap:26px}
+.hero-side .tag{font-size:11px;letter-spacing:.32em;text-transform:uppercase;opacity:.7}
+.hero-side h1{font-family:Fraunces,serif;font-weight:430;font-size:clamp(42px,3.6vw,64px);line-height:1.04}
+.hero-side h1 em{font-style:italic;color:var(--sand)}
+.hero-side p{font-size:15.5px;line-height:1.75;opacity:.88;max-width:420px}
+.hero-side .for{margin-top:auto;font-size:13px;line-height:1.7;padding-top:20px;border-top:1px solid rgba(255,255,255,.22);opacity:.82;max-width:420px}
+.hero-main{display:flex;flex-direction:column;position:relative;overflow:hidden}
+.spec{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6vh 4vw;gap:28px;position:relative;z-index:1}
+section.block{position:relative;overflow:hidden}
+section.block > *{position:relative;z-index:1}
+section.block > .corner-dots{position:absolute;z-index:0}
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1)}
+.rv.vis{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+.spec-display{font-family:Fraunces,serif;font-weight:420;font-size:clamp(44px,5vw,86px);line-height:1.05;letter-spacing:-.015em;max-width:16ch}
+.spec-display em{font-style:italic;color:var(--terra)}
+.spec-row{display:flex;gap:4vw;flex-wrap:wrap;align-items:baseline}
+.spec-row .item{font-size:13px;color:#6E675A;line-height:1.7}
+.spec-row .item b{display:block;font-size:14px;color:var(--ink);letter-spacing:.04em}
+.spec-body{max-width:520px;font-size:16px;line-height:1.75;color:#57503F}
+
+/* palette strip */
+.palette{display:flex;height:150px}
+@media(max-width:960px){.palette{flex-wrap:wrap;height:auto}}
+.palette .sw{flex:1;min-width:120px;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;font-size:11px;letter-spacing:.05em;min-height:110px}
+.palette .sw b{font-size:12px;margin-bottom:3px;letter-spacing:.02em}
+.sw.light{color:#4C4536}.sw.dark{color:rgba(255,255,255,.88)}
+
+/* ===== section scaffolding ===== */
+section.block{padding:9vh 4vw}
+.block-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:44px;flex-wrap:wrap}
+.block-head h2{font-family:Fraunces,serif;font-weight:450;font-size:clamp(30px,2.8vw,46px);line-height:1.08}
+.block-head h2 em{font-style:italic;color:var(--forest)}
+.block-head .sub{font-size:14.5px;color:#6E675A;max-width:420px;line-height:1.65}
+.note{font-size:12px;color:#8A8171;margin-top:18px;letter-spacing:.04em}
+
+/* ===== komponenta: nabídka domů ===== */
+.offers{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+.chip{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:11px 20px;border-radius:100px;border:1.5px solid var(--line);color:#6E675A;cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--forest);color:var(--forest)}
+.chip.on{background:var(--forest);border-color:var(--forest);color:#F2EDE2}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.cards{grid-template-columns:1fr}}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .25s,box-shadow .25s;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px rgba(40,34,20,.45)}
+.card .img{aspect-ratio:16/10;position:relative;overflow:hidden}
+.card .img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.card:hover .img img{transform:scale(1.045)}
+.badge{position:absolute;top:14px;left:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff;padding:6px 13px;border-radius:100px}
+.card .body{padding:20px 22px 22px}
+.card h3{font-family:Fraunces,serif;font-weight:500;font-size:23px}
+.card .params{display:flex;gap:0;margin:14px 0 16px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.card .params div{flex:1;padding:9px 8px;text-align:center;font-size:11px;color:#8A8171;border-right:1px solid var(--line);letter-spacing:.03em}
+.card .params div:last-child{border-right:0}
+.card .params b{display:block;font-size:14px;color:var(--ink);font-weight:700;margin-bottom:1px}
+.card .price-row{display:flex;justify-content:space-between;align-items:center}
+.card .price{font-weight:800;font-size:17px;color:var(--forest)}
+.card .price small{font-weight:600;font-size:11px;color:#8A8171;display:block;letter-spacing:.06em}
+.card .go{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--terra)}
+.card.sold{opacity:.62}
+.offers .cta-row{display:flex;justify-content:center;margin-top:44px}
+
+/* ===== komponenta: situační plán ===== */
+.plan-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#87A97E;box-shadow:0 34px 70px -40px rgba(40,34,20,.5)}
+.plan-wrap svg{display:block;width:100%;height:auto}
+.plan-wrap svg ellipse,.plan-wrap svg circle,.plan-wrap svg path{pointer-events:none}
+.lot{cursor:pointer;transition:filter .15s, opacity .15s;pointer-events:all}
+.lot:hover{filter:brightness(1.15)}
+#tip{position:absolute;pointer-events:none;background:var(--paper);border-radius:12px;padding:14px 16px;box-shadow:0 18px 40px -14px rgba(30,40,25,.55);font-size:12px;line-height:1.6;color:#57503F;width:190px;opacity:0;transform:translateY(6px);transition:opacity .15s,transform .15s;z-index:10}
+#tip.show{opacity:1;transform:translateY(0)}
+#tip b{font-family:Fraunces,serif;font-size:17px;font-weight:600;color:var(--ink);display:block}
+#tip .st{font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.14em}
+#tip .go{margin-top:7px;color:var(--terra);font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.legend{display:flex;gap:22px;flex-wrap:wrap;padding:16px 20px;background:var(--paper);border-top:1px solid var(--line);font-size:12.5px;color:#6B6350}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+
+/* ===== komponenty: formulář + kalkulačka ===== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+@media(max-width:1000px){.duo{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:34px 36px 36px;box-shadow:0 30px 60px -40px rgba(40,34,20,.4)}
+.panel h3{font-family:Fraunces,serif;font-weight:500;font-size:26px;margin-bottom:6px}
+.panel h3 em{font-style:italic;color:var(--forest)}
+.panel .lead{font-size:13.5px;color:#8A8171;line-height:1.6;margin-bottom:24px}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f-grid .full{grid-column:1/-1}
+.field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A8171;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;font-family:inherit;font-size:14.5px;color:var(--ink);outline:none;transition:border-color .2s, box-shadow .2s;appearance:none}
+.field textarea{resize:vertical;min-height:88px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233D5A40' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--forest);box-shadow:0 0 0 3px rgba(61,90,64,.13)}
+.field.err input,.field.err select,.field.err textarea{border-color:#B04A3A;box-shadow:0 0 0 3px rgba(176,74,58,.12)}
+.field .msg{display:none;font-size:11.5px;color:#B04A3A;margin-top:6px;font-weight:600}
+.field.err .msg{display:block}
+.field label.check{display:flex;gap:11px;align-items:flex-start;font-size:12.5px;color:#6B6350;line-height:1.55;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500}
+.check input{width:18px;height:18px;margin-top:1px;accent-color:var(--forest);flex:none}
+.check.err{color:#B04A3A}
+.f-actions{display:flex;align-items:center;gap:18px;margin-top:4px}
+.f-note{font-size:11.5px;color:#8A8171}
+/* kalkulačka */
+.calc-row{margin-bottom:22px}
+.calc-row .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.calc-row .top label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A8171}
+.calc-row .top output{font-weight:800;font-size:15px;color:var(--ink)}
+.calc-row input[type=range]{width:100%;accent-color:var(--forest);height:22px}
+.calc-result{background:var(--forest);color:#F2EDE2;border-radius:14px;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px}
+.calc-result .lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-bottom:4px}
+.calc-result .val{font-family:Fraunces,serif;font-size:34px;font-weight:500}
+.calc-result .val small{font-size:15px;opacity:.75}
+.calc-note{font-size:11.5px;color:#8A8171;margin-top:14px;line-height:1.55}
+/* ===== komponenta: typografie ===== */
+.type-board{background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.t-row{display:grid;grid-template-columns:220px 1fr;gap:28px;padding:26px 34px;border-bottom:1px solid var(--line);align-items:baseline}
+.t-row:last-child{border-bottom:0}
+@media(max-width:800px){.t-row{grid-template-columns:1fr;gap:8px}}
+.t-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#8A8171;line-height:1.9}
+.t-meta small{display:block;font-weight:500;letter-spacing:.04em;text-transform:none;color:#B0A890;font-size:11.5px}
+.t-h1{font-family:Fraunces,serif;font-weight:420;font-size:clamp(38px,3.6vw,58px);line-height:1.06;letter-spacing:-.015em}
+.t-h1 em,.t-h2 em,.t-h3 em{font-style:italic;color:var(--forest)}
+.t-h1 em.t-terra{color:var(--terra)}
+.t-h2{font-family:Fraunces,serif;font-weight:450;font-size:clamp(28px,2.4vw,38px);line-height:1.1}
+.t-h3{font-family:Fraunces,serif;font-weight:500;font-size:23px;line-height:1.2}
+.t-lead{font-size:17.5px;line-height:1.7;color:#4C4536;max-width:640px}
+.t-body{font-size:15px;line-height:1.75;color:#57503F;max-width:640px}
+.t-body a{color:var(--terra);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.t-small{font-size:12.5px;line-height:1.6;color:#8A8171;max-width:640px}
+.t-badges{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.t-badges .pill{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff;padding:7px 14px;border-radius:100px}
+.pill.out{background:transparent;color:var(--forest);border:1.5px solid var(--forest)}
+.pill.soft{background:rgba(192,107,69,.14);color:#A55836}
+.pill.sand{background:var(--sand);color:#6B5B3E}
+.t-price{font-weight:800;font-size:19px;color:var(--forest)}
+.t-price small{display:block;font-weight:600;font-size:11px;color:#8A8171;letter-spacing:.06em}
+
+/* ===== komponenta: tlačítka ===== */
+.btn-set{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+@media(max-width:900px){.btn-set{grid-template-columns:1fr}}
+.btn-cell{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:30px 28px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.btn-cell .cap{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:800;color:#8A8171}
+.btn-cell .desc{font-size:12.5px;color:#8A8171;line-height:1.6;margin-top:auto}
+.ubtn{display:inline-flex;align-items:center;gap:10px;font-family:inherit;font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;padding:16px 30px;border-radius:100px;border:0;cursor:pointer;transition:background .18s, color .18s, border-color .18s, box-shadow .18s, transform .1s cubic-bezier(.34,1.56,.64,1)}
+.ubtn:active{transform:translateY(2px) scale(.965)}
+.ubtn .arr{transition:transform .18s}
+.ubtn:hover .arr{transform:translateX(4px)}
+.ubtn.sm{padding:11px 20px;font-size:11px}
+/* primary */
+.ubtn.primary{background:var(--forest);color:#F2EDE2;box-shadow:0 12px 24px -12px rgba(61,90,64,.65)}
+.ubtn.primary:hover{background:#2F4832;box-shadow:0 16px 30px -12px rgba(61,90,64,.75)}
+.ubtn.primary:active{box-shadow:0 6px 12px -8px rgba(61,90,64,.6)}
+/* secondary */
+.ubtn.secondary{background:var(--terra);color:#FFF6EE;box-shadow:0 12px 24px -12px rgba(192,107,69,.65)}
+.ubtn.secondary:hover{background:#A55836;box-shadow:0 16px 30px -12px rgba(192,107,69,.75)}
+.ubtn.secondary:active{box-shadow:0 6px 12px -8px rgba(192,107,69,.6)}
+/* outline */
+.ubtn.outline{background:transparent;color:var(--forest);border:1.5px solid var(--forest);padding:14.5px 28.5px}
+.ubtn.outline:hover{background:rgba(61,90,64,.09)}
+.ubtn.outline.sm{padding:9.5px 18.5px}
+.ubtn:focus-visible{outline:3px solid rgba(192,107,69,.45);outline-offset:3px}
+
+/* toasty */
+#toasts{position:fixed;right:26px;bottom:26px;z-index:10000;display:flex;flex-direction:column;gap:12px;pointer-events:none}
+.toast{pointer-events:auto;position:relative;overflow:hidden;display:flex;gap:14px;align-items:center;background:#26221C;color:#F2EDE2;border-radius:14px;padding:16px 18px 19px;width:360px;box-shadow:0 30px 60px -20px rgba(20,17,12,.65);opacity:0;transform:translateY(18px) scale(.97);transition:opacity .35s cubic-bezier(.21,1.02,.55,1), transform .35s cubic-bezier(.21,1.02,.55,1)}
+.toast.in{opacity:1;transform:none}
+.toast .ic{width:38px;height:38px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center}
+.toast .ic svg{width:19px;height:19px}
+.toast.success .ic{background:rgba(78,139,95,.22)}
+.toast.error .ic{background:rgba(176,74,58,.22)}
+.toast.info .ic{background:rgba(95,126,158,.22)}
+.toast b{font-family:Fraunces,serif;font-size:16px;font-weight:550;display:block;margin-bottom:2px;letter-spacing:.01em}
+.toast p{font-size:12.5px;color:#BDB4A4;line-height:1.5}
+.toast .x{margin-left:auto;flex:none;background:rgba(255,255,255,.07);border:0;width:26px;height:26px;border-radius:8px;font-size:14px;color:#BDB4A4;cursor:pointer;line-height:1;transition:background .2s}
+.toast .x:hover{background:rgba(255,255,255,.16);color:#F2EDE2}
+.toast .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;transform-origin:left;animation:toastbar linear forwards}
+.toast:hover .bar{animation-play-state:paused}
+.toast.success .bar{background:var(--st-free)}
+.toast.error .bar{background:#B04A3A}
+.toast.info .bar{background:var(--st-prep)}
+@keyframes toastbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+/* demo tlačítka toastů */
+.toast-demo{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.toast-demo .lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#8A8171;margin-right:4px}
+.tbtn{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:9px 16px;border-radius:100px;border:1.5px solid var(--line);background:transparent;color:#6E675A;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+.tbtn i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.tbtn.ok i{background:var(--st-free)}
+.tbtn.ko i{background:#B04A3A}
+.tbtn:hover{border-color:var(--forest);color:var(--forest)}
+.tbtn.ko:hover{border-color:#B04A3A;color:#B04A3A}
+
+</style>
+</head>
+<body>
+
+<!-- ============ HERO: směr + typografie ============ -->
+<div class="hero">
+  <aside class="hero-side">
+    <span class="tag">Moodboard</span>
+    <h1>Design <em>koncept</em></h1>
+    <p>Teplé, slunečné, rodinné. Krémový podklad, lesní zeleň a terakotový akcent.
+    Měkké oblé tvary, velkorysé fotografie, přátelský tón.</p>
+    <p style="font-size:13.5px;opacity:.75">Nadpisy · <b>Fraunces</b><br>Texty · <b>Hanken Grotesk</b><br>Plná podpora české diakritiky.</p>
+    <div class="for">Ukázky níže jsou nereálné komponenty budoucího webu - nabídka domů
+    a interaktivní situační plán (bez reálného podkladu). Obrázky jsou ilustrační,
+    nahradí je vizualizace projektu.</div>
+  </aside>
+
+  <div class="hero-main">
+    <div class="corner-dots" style="top:0;right:0;--mx:100%;--my:0%" aria-hidden="true"></div>
+    <div class="spec">
+      <div class="spec-display">Bydlení, kde začíná <em>váš příběh</em></div>
+      <p class="spec-body">Moderní rodinné domy v klidné lokalitě s vlastní zahradou, tepelným
+      čerpadlem a promyšlenou dispozicí. Ukázka běžného textu webu ve fontu Hanken Grotesk.</p>
+      <div class="spec-row">
+        <span class="item"><b>Aa Bb Čč Řř Žž</b>Fraunces · nadpisy</span>
+        <span class="item"><b>Aa Bb Čč Řř Žž</b>Hanken Grotesk · texty</span>
+        <span class="item"><b>0 1 2 3 4 5 6 7 8 9 Kč</b>čísla a ceny</span>
+      </div>
+    </div>
+    <div class="palette">
+      <div class="sw light" style="background:#F6F1E8;border-top:1px solid var(--line)"><b>Krémová</b>#F6F1E8</div>
+      <div class="sw dark" style="background:#3D5A40"><b>Lesní zeleň</b>#3D5A40</div>
+      <div class="sw dark" style="background:#57795B"><b>Šalvěj</b>#57795B</div>
+      <div class="sw dark" style="background:#C06B45"><b>Terakota</b>#C06B45</div>
+      <div class="sw light" style="background:#D9C9AC"><b>Písková</b>#D9C9AC</div>
+      <div class="sw dark" style="background:#2C2822"><b>Inkoust</b>#2C2822</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KOMPONENTA: nabídka domů ============ -->
+<section class="block offers">
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenta · přehled nabídky domů</div>
+    </div>
+    <p class="sub">Karty domů se stavem dostupnosti, parametry a cenou. Data se načítají
+    z administrace - změna ceny nebo stavu se okamžitě propíše sem, do ceníku i do situačního plánu.</p>
+  </div>
+
+  <div class="filters">
+    <span class="chip on">Všechny domy</span>
+    <span class="chip">4+kk</span>
+    <span class="chip">5+kk</span>
+    <span class="chip">Jen volné</span>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="img">
+        <span class="badge" style="background:var(--st-free)">Volný</span>
+        <img src="https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Dům Javor">
+      </div>
+      <div class="body">
+        <h3>Dům Javor · RD 21</h3>
+        <div class="params">
+          <div><b>4+kk</b>dispozice</div>
+          <div><b>104 m²</b>užitná</div>
+          <div><b>421 m²</b>pozemek</div>
+          <div><b>2</b>parkování</div>
+        </div>
+        <div class="price-row">
+          <span class="price">8 890 000 Kč<small>vč. DPH a pozemku</small></span>
+          <span class="go">Detail →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="img">
+        <span class="badge" style="background:var(--st-res)">Rezervovaný</span>
+        <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Dům Lípa">
+      </div>
+      <div class="body">
+        <h3>Dům Lípa · RD 18</h3>
+        <div class="params">
+          <div><b>5+kk</b>dispozice</div>
+          <div><b>108 m²</b>užitná</div>
+          <div><b>450 m²</b>pozemek</div>
+          <div><b>2</b>parkování</div>
+        </div>
+        <div class="price-row">
+          <span class="price">9 148 000 Kč<small>vč. DPH a pozemku</small></span>
+          <span class="go">Detail →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card sold">
+      <div class="img">
+        <span class="badge" style="background:var(--st-sold)">Prodaný</span>
+        <img src="https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Dům Habr">
+      </div>
+      <div class="body">
+        <h3>Dům Habr · RD 7</h3>
+        <div class="params">
+          <div><b>5+kk</b>dispozice</div>
+          <div><b>102 m²</b>užitná</div>
+          <div><b>392 m²</b>pozemek</div>
+          <div><b>2</b>parkování</div>
+        </div>
+        <div class="price-row">
+          <span class="price">Prodáno<small>cena neuvedena</small></span>
+          <span class="go">Detail →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-row"><button class="ubtn primary" type="button">Zobrazit všech 28 domů <span class="arr">→</span></button></div>
+</section>
+
+<!-- ============ KOMPONENTA: situační plán ============ -->
+<section class="block">
+  <div class="corner-dots" style="bottom:0;left:0;--mx:0%;--my:100%" aria-hidden="true"></div>
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenta · interaktivní situační plán</div>
+    </div>
+    <p class="sub">Najeďte myší na parcelu. Barva odpovídá stavu dostupnosti, klik vede
+    na detail domu. Na mobilu první dotyk zobrazí kartu, druhý otevře detail. Podkladem
+    bude reálná vizualizace projektu z ptačí perspektivy.</p>
+  </div>
+
+  <div class="plan-wrap" id="plan">
+    <svg viewBox="0 0 1400 520">
+      <defs>
+        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8FB086"/><stop offset="1" stop-color="#7CA073"/>
+        </linearGradient>
+      </defs>
+      <rect width="1400" height="520" fill="url(#grass)"/>
+      <ellipse cx="110" cy="60" rx="130" ry="42" fill="#6E9464" opacity=".8"/>
+      <ellipse cx="1290" cy="470" rx="160" ry="50" fill="#6E9464" opacity=".8"/>
+      <ellipse cx="620" cy="30" rx="90" ry="26" fill="#6E9464" opacity=".55"/>
+      <circle cx="180" cy="470" r="26" fill="#5F8557"/><circle cx="228" cy="486" r="18" fill="#6E9464"/>
+      <circle cx="1210" cy="70" r="24" fill="#5F8557"/><circle cx="1256" cy="88" r="16" fill="#6E9464"/>
+      <!-- komunikace -->
+      <path d="M0,300 C340,285 620,250 1400,272 L1400,346 C620,322 340,360 0,376 Z" fill="#C9C2B2"/>
+      <path d="M0,336 C340,321 620,285 1400,308" stroke="#fff" stroke-width="4" stroke-dasharray="26 22" fill="none" opacity=".75"/>
+      <!-- parcely horní řada -->
+      <g stroke="#F6F1E8" stroke-width="4" id="lots">
+        <polygon class="lot" data-h="RD 1|Volný|free|4+kk · 106 m² · 598 m² pozemek|8 990 000 Kč" points="110,70 310,62 322,232 120,242" fill="#4E8B5F" fill-opacity=".78"/>
+        <polygon class="lot" data-h="RD 2|Volný|free|4+kk · 106 m² · 574 m² pozemek|9 148 000 Kč" points="340,60 540,54 550,222 350,230" fill="#4E8B5F" fill-opacity=".78"/>
+        <polygon class="lot" data-h="RD 3|Rezervovaný|res|5+kk · 108 m² · 540 m² pozemek|9 320 000 Kč" points="570,52 770,48 778,214 580,220" fill="#D2953B" fill-opacity=".82"/>
+        <polygon class="lot" data-h="RD 4|Prodaný|sold|5+kk · 102 m² · 495 m² pozemek|prodáno" points="800,46 1000,44 1006,208 806,212" fill="#A85241" fill-opacity=".6"/>
+        <polygon class="lot" data-h="RD 5|Připravujeme|prep|5+kk · II. etapa|cena bude upřesněna" points="1030,44 1230,42 1234,204 1034,206" fill="#5F7E9E" fill-opacity=".78"/>
+      </g>
+      <!-- parcely dolní řada -->
+      <g stroke="#F6F1E8" stroke-width="4">
+        <polygon class="lot" data-h="RD 6|Prodaný|sold|4+kk · 106 m² · 396 m² pozemek|prodáno" points="150,398 350,390 358,486 156,494" fill="#A85241" fill-opacity=".6"/>
+        <polygon class="lot" data-h="RD 7|Volný|free|5+kk · 108 m² · 356 m² pozemek|9 730 000 Kč" points="380,388 580,380 588,482 388,488" fill="#4E8B5F" fill-opacity=".78"/>
+        <polygon class="lot" data-h="RD 8|Rezervovaný|res|5+kk · 108 m² · 360 m² pozemek|8 637 000 Kč" points="610,378 810,372 816,478 616,482" fill="#D2953B" fill-opacity=".82"/>
+        <polygon class="lot" data-h="RD 9|Volný|free|5+kk · 136 m² bungalov · 833 m² pozemek|11 494 000 Kč" points="840,370 1040,366 1046,474 846,478" fill="#4E8B5F" fill-opacity=".78"/>
+      </g>
+      <!-- střechy -->
+      <g fill="#F6F1E8" opacity=".95" pointer-events="none">
+        <rect x="165" y="110" width="88" height="56" rx="4"/><rect x="395" y="102" width="88" height="56" rx="4"/>
+        <rect x="625" y="96" width="88" height="56" rx="4"/><rect x="853" y="92" width="88" height="56" rx="4"/>
+        <rect x="1082" y="88" width="88" height="56" rx="4"/>
+        <rect x="205" y="420" width="80" height="48" rx="4"/><rect x="435" y="412" width="80" height="48" rx="4"/>
+        <rect x="663" y="404" width="80" height="48" rx="4"/><rect x="893" y="398" width="80" height="48" rx="4"/>
+      </g>
+    </svg>
+    <div id="tip"></div>
+    <div class="legend">
+      <span><i style="background:var(--st-free)"></i>Volný</span>
+      <span><i style="background:var(--st-res)"></i>Rezervovaný</span>
+      <span><i style="background:var(--st-sold);opacity:.65"></i>Prodaný</span>
+      <span><i style="background:var(--st-prep)"></i>Připravujeme</span>
+      <span style="margin-left:auto;opacity:.7">Stavy se mění jedním klikem v administraci</span>
+    </div>
+  </div>
+  <p class="note">Podklad plánu je ilustrační. Ve finále nahradí vizualizace projektu, parcely obkreslím přesně podle situačního výkresu.</p>
+</section>
+
+<!-- ============ KOMPONENTY: rezervace + kalkulačka ============ -->
+<section class="block offers" style="border-bottom:0">
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenty · poptávka a financování</div>
+    </div>
+    <p class="sub">Formulář je vždy propojený s konkrétním domem - obchodník přesně ví,
+    o co má zájemce zájem. Validace hlídá chyby ještě před odesláním, potvrzení přijde
+    zájemci i prodejci. Zkuste odeslat.
+    <span class="toast-demo">
+      <span class="lbl">Test notifikací</span>
+      <button class="tbtn ok" type="button" onclick="toast('success','Poptávka odeslána','Děkujeme za zájem o Dům Javor. Ozveme se do 24 hodin.')"><i></i>Úspěch</button>
+      <button class="tbtn ko" type="button" onclick="toast('error','Odeslání se nezdařilo','Zkontrolujte připojení a zkuste to prosím znovu.')"><i></i>Chyba</button>
+    </span>
+    </p>
+  </div>
+
+  <div class="duo">
+    <!-- rezervační formulář -->
+    <div class="panel">
+      <h3>Mám zájem o <em>Dům Javor</em></h3>
+      <p class="lead">Nechte nám kontakt, ozveme se do 24 hodin a domluvíme prohlídku.</p>
+      <form id="resform" novalidate>
+        <div class="f-grid">
+          <div class="field">
+            <label for="f-name">Jméno a příjmení</label>
+            <input id="f-name" type="text" placeholder="Jan Novák">
+            <span class="msg">Vyplňte prosím jméno.</span>
+          </div>
+          <div class="field">
+            <label for="f-phone">Telefon</label>
+            <input id="f-phone" type="tel" placeholder="+420 606 123 456">
+            <span class="msg">Zadejte platné české číslo.</span>
+          </div>
+          <div class="field full">
+            <label for="f-email">E-mail</label>
+            <input id="f-email" type="email" placeholder="jan.novak@email.cz">
+            <span class="msg">Zadejte platný e-mail.</span>
+          </div>
+          <div class="field full">
+            <label for="f-house">Vybraný dům</label>
+            <select id="f-house">
+              <option selected>Dům Javor · RD 21 · 4+kk · 8 890 000 Kč</option>
+              <option>Dům Lípa · RD 18 · 5+kk · 9 148 000 Kč</option>
+              <option>Dům Dub · RD 9 · 5+kk bungalov · 11 494 000 Kč</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="f-msg">Zpráva (nepovinné)</label>
+            <textarea id="f-msg" placeholder="Rádi bychom se přišli podívat o víkendu…"></textarea>
+          </div>
+          <div class="field full">
+            <label class="check" id="f-gdpr-w">
+              <input type="checkbox" id="f-gdpr">
+              <span>Souhlasím se zpracováním osobních údajů za účelem vyřízení poptávky.</span>
+            </label>
+            <span class="msg">Bez souhlasu nemůžeme poptávku zpracovat.</span>
+          </div>
+          <div class="f-actions full">
+            <button class="ubtn primary" type="submit">Odeslat poptávku</button>
+            <span class="f-note">Chráněno proti spamu · odpověď do 24 h</span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- hypoteční kalkulačka -->
+    <div class="panel">
+      <h3>Orientační <em>hypoteční kalkulačka</em></h3>
+      <p class="lead">Spočítejte si měsíční splátku pro vybraný dům. Posuvníky reagují okamžitě.</p>
+      <div class="calc-row">
+        <div class="top"><label>Cena nemovitosti</label><output id="c-price-out">8 890 000 Kč</output></div>
+        <input type="range" id="c-price" min="8000000" max="13000000" step="10000" value="8890000">
+      </div>
+      <div class="calc-row">
+        <div class="top"><label>Vlastní zdroje</label><output id="c-down-out">20 % · 1 778 000 Kč</output></div>
+        <input type="range" id="c-down" min="10" max="60" step="1" value="20">
+      </div>
+      <div class="calc-row">
+        <div class="top"><label>Doba splácení</label><output id="c-years-out">30 let</output></div>
+        <input type="range" id="c-years" min="5" max="35" step="1" value="30">
+      </div>
+      <div class="calc-row">
+        <div class="top"><label>Úroková sazba</label><output id="c-rate-out">4,79 % p.a.</output></div>
+        <input type="range" id="c-rate" min="3" max="7" step="0.01" value="4.79">
+      </div>
+      <div class="calc-result">
+        <div>
+          <div class="lbl">Měsíční splátka</div>
+          <div class="val" id="c-monthly">37 254 Kč<small> / měsíc</small></div>
+        </div>
+        <button class="ubtn secondary" id="c-cta" type="button">Chci nabídku financování</button>
+      </div>
+      <p class="calc-note">Výpočet je pouze orientační. Konkrétní nabídku připraví náš hypoteční
+      specialista podle vaší situace.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KOMPONENTA: typografie ============ -->
+<section class="block">
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenta · typografie a texty</div>
+    </div>
+    <p class="sub">Kompletní textový systém webu: nadpisy, odstavce, badges a cenovky.
+    Každá úroveň má jasnou roli, na celém webu se nepoužije nic jiného.</p>
+  </div>
+
+  <div class="type-board">
+    <div class="t-row">
+      <div class="t-meta">Nadpis H1 · hero<small>Fraunces · 58 px</small></div>
+      <div class="t-h1">Nové rodinné domy <em>se zahradou</em></div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Nadpis H2 · sekce<small>Fraunces · 38 px</small></div>
+      <div class="t-h2">Vyberte si <em>svůj dům</em></div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Nadpis H3 · karta<small>Fraunces · 23 px</small></div>
+      <div class="t-h3">Dům Javor · RD 21</div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Perex<small>Hanken Grotesk · 17,5 px</small></div>
+      <p class="t-lead">Nová uzavřená lokalita s 28 nízkoenergetickými domy. Vybírejte
+      z dispozic 4+kk a 5+kk s vlastní zahradou a parkováním u domu.</p>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Odstavec<small>Hanken Grotesk · 15 px</small></div>
+      <p class="t-body">Každý dům je vybaven tepelným čerpadlem a podlahovým vytápěním.
+      Klientské změny řešíme individuálně, více v sekci <a href="#">standardy provedení</a>.
+      Dokončení první etapy je plánováno na jaro 2027.</p>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Poznámka<small>Hanken Grotesk · 12,5 px</small></div>
+      <p class="t-small">Uvedené ceny jsou včetně DPH a pozemku. Výpočet splátky je pouze
+      orientační, konkrétní nabídku připraví hypoteční specialista.</p>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Sekční štítek<small>Hanken Grotesk · verzálky</small></div>
+      <div class="label">Komponenta · přehled nabídky domů</div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Badges · stavy<small>na kartách, v ceníku i plánu</small></div>
+      <div class="t-badges">
+        <span class="pill" style="background:var(--st-free)">Volný</span>
+        <span class="pill" style="background:var(--st-res)">Rezervovaný</span>
+        <span class="pill" style="background:var(--st-sold);opacity:.75">Prodaný</span>
+        <span class="pill" style="background:var(--st-prep)">Připravujeme</span>
+      </div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Badges · doplňkové<small>akce, etapy, novinky</small></div>
+      <div class="t-badges">
+        <span class="pill soft">Akční cena</span>
+        <span class="pill sand">II. etapa</span>
+        <span class="pill out">Novinka</span>
+      </div>
+    </div>
+    <div class="t-row">
+      <div class="t-meta">Cenovka<small>karty a detail domu</small></div>
+      <div class="t-price">8 890 000 Kč<small>vč. DPH a pozemku</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KOMPONENTA: tlačítka ============ -->
+<section class="block" style="padding-top:0">
+  <div class="block-head">
+    <div>
+      <div class="label" style="margin-bottom:14px">Komponenta · tlačítka</div>
+    </div>
+    <p class="sub">Jasná hierarchie akcí na celém webu: primární vede k poptávce, sekundární
+    k prohlídce nabídky, outline pro doplňkové akce. Vyzkoušejte hover i stisknutí.</p>
+  </div>
+  <div class="btn-set">
+    <div class="btn-cell">
+      <span class="cap">Primary</span>
+      <button class="ubtn primary" type="button">Mám zájem o dům <span class="arr">→</span></button>
+      <button class="ubtn primary sm" type="button">Odeslat poptávku</button>
+      <p class="desc">Hlavní akce stránky - poptávka, rezervace, odeslání formuláře. Na stránce vždy jen jedna.</p>
+    </div>
+    <div class="btn-cell">
+      <span class="cap">Secondary</span>
+      <button class="ubtn secondary" type="button">Prohlédnout domy <span class="arr">→</span></button>
+      <button class="ubtn secondary sm" type="button">Stáhnout ceník PDF</button>
+      <p class="desc">Podpůrné akce - prohlídka nabídky, stažení podkladů, přechod na detail.</p>
+    </div>
+    <div class="btn-cell">
+      <span class="cap">Outline</span>
+      <button class="ubtn outline" type="button">Domluvit prohlídku <span class="arr">→</span></button>
+      <button class="ubtn outline sm" type="button">Zobrazit lokalitu</button>
+      <p class="desc">Terciární akce a alternativy vedle primárního tlačítka, decentní, neruší hierarchii.</p>
+    </div>
+  </div>
+</section>
+
+<div id="toasts"></div>
+
+<script>
+(function(){
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  document.body.classList.add('cur-on');
+  var dot = document.createElement('div'); dot.className = 'cursor-dot';
+  var ring = document.createElement('div'); ring.className = 'cursor-ring';
+  document.body.appendChild(dot); document.body.appendChild(ring);
+  var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = 'translate(' + (mx-3.5) + 'px,' + (my-3.5) + 'px)';
+  });
+  (function loop(){
+    rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+    ring.style.transform = 'translate(' + (rx - ring.offsetWidth/2) + 'px,' + (ry - ring.offsetHeight/2) + 'px)';
+    requestAnimationFrame(loop);
+  })();
+  var HOV = 'a, .card, .chip, .ubtn, .tbtn, .lot, .go';
+  document.addEventListener('mouseover', function(e){
+    if (e.target.closest(HOV)) ring.classList.add('hov');
+  });
+  document.addEventListener('mouseout', function(e){
+    if (e.target.closest(HOV)) ring.classList.remove('hov');
+  });
+  document.addEventListener('mousedown', function(){ ring.classList.add('down'); });
+  document.addEventListener('mouseup', function(){ ring.classList.remove('down'); });
+  document.addEventListener('mouseleave', function(){ dot.style.opacity = ring.style.opacity = '0'; });
+  document.addEventListener('mouseenter', function(){ dot.style.opacity = '1'; ring.style.opacity = ''; });
+})();
+(function(){
+  var wrap = document.getElementById('plan');
+  var tip = document.getElementById('tip');
+  var colors = {free:'#4E8B5F', res:'#D2953B', sold:'#A85241', prep:'#5F7E9E'};
+  document.querySelectorAll('.lot').forEach(function(lot){
+    lot.addEventListener('mousemove', function(e){
+      var d = lot.getAttribute('data-h').split('|');
+      tip.innerHTML = '<b>'+d[0]+'</b><span class="st" style="color:'+colors[d[2]]+'">● '+d[1]+'</span><br>'+d[3]+'<br>'+d[4]+'<div class="go">Zobrazit detail →</div>';
+      var r = wrap.getBoundingClientRect();
+      var x = e.clientX - r.left + 18, y = e.clientY - r.top + 18;
+      if (x > r.width - 210) x = e.clientX - r.left - 208;
+      if (y > r.height - 150) y = e.clientY - r.top - 150;
+      tip.style.left = x + 'px'; tip.style.top = y + 'px';
+      tip.classList.add('show');
+    });
+    lot.addEventListener('mouseleave', function(){ tip.classList.remove('show'); });
+  });
+})();
+
+/* ===== scroll reveal ===== */
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var SEL = ['.hero-side > *', '.spec > *', '.palette .sw', '.block-head', '.filters', '.card',
+             '.cta-row', '.plan-wrap', '.note', '.panel', '.t-row', '.btn-cell'];
+  var els = document.querySelectorAll(SEL.join(','));
+  els.forEach(function(el, i){ el.classList.add('rv'); el.dataset.rv = i; });
+  var pending = [];
+  var flushTimer = null;
+  function flush(){
+    pending.sort(function(a, b){ return a.dataset.rv - b.dataset.rv; });
+    pending.forEach(function(el, i){
+      el.style.transitionDelay = Math.min(i * 70, 420) + 'ms';
+      el.classList.add('vis');
+    });
+    pending = [];
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){ pending.push(en.target); io.unobserve(en.target); }
+    });
+    clearTimeout(flushTimer); flushTimer = setTimeout(flush, 40);
+  }, {threshold: 0.12, rootMargin: '0px 0px -6% 0px'});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ===== toasty ===== */
+function toast(type, title, text){
+  var DUR = 5000;
+  var icons = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="#7FBF8F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="#E08A77" stroke-width="2.6" stroke-linecap="round"><path d="M12 7v6"/><circle cx="12" cy="16.6" r="0.6" fill="#E08A77"/></svg>',
+    info:    '<svg viewBox="0 0 24 24" fill="none" stroke="#9DB8D2" stroke-width="2.6" stroke-linecap="round"><path d="M12 11v6"/><circle cx="12" cy="7.4" r="0.6" fill="#9DB8D2"/></svg>'
+  };
+  var box = document.getElementById('toasts');
+  var t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.setAttribute('role', 'status');
+  t.innerHTML = '<span class="ic">' + icons[type] + '</span><span><b>' + title + '</b><p>' + text + '</p></span>'
+              + '<button class="x" aria-label="Zavřít">×</button><span class="bar" style="animation-duration:' + DUR + 'ms"></span>';
+  box.appendChild(t);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ t.classList.add('in'); }); });
+  var dead = false;
+  var kill = function(){
+    if (dead) return; dead = true;
+    t.classList.remove('in');
+    setTimeout(function(){ t.remove(); }, 350);
+  };
+  t.querySelector('.x').addEventListener('click', kill);
+  t.querySelector('.bar').addEventListener('animationend', kill);
+}
+
+/* ===== rezervační formulář + validace ===== */
+(function(){
+  var form = document.getElementById('resform');
+  var name = document.getElementById('f-name');
+  var phone = document.getElementById('f-phone');
+  var email = document.getElementById('f-email');
+  var gdpr = document.getElementById('f-gdpr');
+  var reEmail = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  var rePhone = /^(\+420\s?)?(\d{3}\s?){3}$/;
+
+  function setErr(input, bad){
+    var f = input.closest('.field');
+    f.classList.toggle('err', bad);
+    if (input === gdpr) document.getElementById('f-gdpr-w').classList.toggle('err', bad);
+    return !bad;
+  }
+  function vName(){ return setErr(name, name.value.trim().length < 3); }
+  function vPhone(){ return setErr(phone, !rePhone.test(phone.value.trim())); }
+  function vEmail(){ return setErr(email, !reEmail.test(email.value.trim())); }
+  function vGdpr(){ return setErr(gdpr, !gdpr.checked); }
+
+  [[name,vName],[phone,vPhone],[email,vEmail]].forEach(function(pair){
+    pair[0].addEventListener('blur', pair[1]);
+    pair[0].addEventListener('input', function(){ pair[0].closest('.field').classList.remove('err'); });
+  });
+  gdpr.addEventListener('change', vGdpr);
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var ok = [vName(), vPhone(), vEmail(), vGdpr()].every(Boolean);
+    if (!ok){
+      toast('error', 'Zkontrolujte formulář', 'Některá pole nejsou vyplněná správně.');
+      return;
+    }
+    var house = document.getElementById('f-house').value.split('·')[0].trim();
+    toast('success', 'Poptávka odeslána', 'Děkujeme za zájem o ' + house + '. Ozveme se do 24 hodin, potvrzení máte v e-mailu.');
+    form.reset();
+  });
+})();
+
+/* ===== hypoteční kalkulačka ===== */
+(function(){
+  var price = document.getElementById('c-price');
+  var down = document.getElementById('c-down');
+  var years = document.getElementById('c-years');
+  var rate = document.getElementById('c-rate');
+  var fmt = function(n){ return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Kč'; };
+
+  function calc(){
+    var P = +price.value, d = +down.value, y = +years.value, r = +rate.value;
+    document.getElementById('c-price-out').textContent = fmt(P);
+    document.getElementById('c-down-out').textContent = d + ' % · ' + fmt(P * d / 100);
+    document.getElementById('c-years-out').textContent = y + (y >= 5 ? ' let' : ' roky');
+    document.getElementById('c-rate-out').textContent = r.toFixed(2).replace('.', ',') + ' % p.a.';
+    var loan = P * (1 - d / 100), mr = r / 100 / 12, n = y * 12;
+    var m = mr > 0 ? loan * mr / (1 - Math.pow(1 + mr, -n)) : loan / n;
+    document.getElementById('c-monthly').innerHTML = fmt(m) + '<small> / měsíc</small>';
+  }
+  [price, down, years, rate].forEach(function(el){ el.addEventListener('input', calc); });
+  calc();
+
+  document.getElementById('c-cta').addEventListener('click', function(){
+    toast('info', 'Předáno specialistovi', 'Hypoteční specialista vás bude kontaktovat s nezávaznou nabídkou financování.');
+  });
+})();
+</script>
+</body>
+</html>
